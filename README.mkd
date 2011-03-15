@@ -1,0 +1,24 @@
+Installation and setup:
+=======================
+
+To install, put it somewhere and add the path to your extras folder
+
+To use the JIRA plugin (or for things to even work with it in the path) you need to add the following to your ~/.phenny/default.py file:
+
+jira_baseurl = "http://jira.yourproject.org/rpc/xmlrpc"
+jira_username = "user"
+jira_password = "pass""
+jira_projects = ["PROJ1","PROJ2"]
+jira_channels = ["#chan1", "#chan2"]
+jira_mappings = {"status":{
+    }, "priority": {
+    },
+}
+
+confluence_baseurl = "http://www.confluencepage.org/rpc/xmlrpc"
+confluence_username = "user"
+confluence_password = "pass"
+confluence_searchresults = 8
+
+# This should be the github project to search when a hashtag is seen
+github_project = "firebreath/FireBreath"
