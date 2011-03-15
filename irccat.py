@@ -26,7 +26,7 @@ class IrcCatListener(ThreadingMixIn, StreamRequestHandler):
         print "Channels:", dest
 
         for chan in dest:
-            if chan[0] == "#" and chan in phenny.channels:
+            if chan[0] == "#" and chan not in phenny.channels:
                 print "Someone tried to make me say something in a channel I'm not in!"
             else:
                 phenny.msg(chan, msg)
