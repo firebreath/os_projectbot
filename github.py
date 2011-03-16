@@ -8,19 +8,20 @@ Written for use in the #firebreath IRC channel: http://www.firebreath.org
 """
 
 from github2.client import Github
+import web
 
 gh = Github()
 
-def f_find_github_commit(self, input):
+def f_find_github_commit(phenny, input):
     print "Searching for commit...", input
     query = input.group(1)
-    _find_github_commit(self, query)
+    _find_github_commit(phenny, query)
 
-def _find_github_commit(self, query):
+def _find_github_commit(phenny, query):
     try:
-        res = gh.commits.show(self.config.github_project, sha=query)
+        res = gh.commits.show(phenny.config.github_project, sha=query)
         print res
-        self.say("%s by %s: %s %s" % (res.id[:7], res.author["name"], res.message[:60], shorten("https://github.com" + res.url)))
+        phenny.say("%s by %s: %s %s" % (res.id[:7], res.author["name"], res.message[:60], shorten("https://github.com" + res.url)))
     except:
         print "Couldn't find %s" % query
         pass
@@ -28,6 +29,29 @@ def _find_github_commit(self, query):
 f_find_github_commit.rule = r'.*\b([0-9a-f]{7,40})\b.*'
 f_find_github_commit.priority = "low"
 f_find_github_commit.thread = True
+
+def f_find_github_file(phenny, input):
+    print "Searching for file: ", input
+    tmp = input.group(1).strip().split(" ", 1)
+    if len(tmp) > 1:
+        _find_github_file(phenny, tmp[0], tmp[1])
+    else:
+        _find_github_file(phenny, phenny.config.github_defaultbranch, tmp[0])
+
+def _find_github_file(phenny, branch, fname):
+    bag = web.json(web.get("https://github.com/api/v2/json/blob/all/%s/%s" % (phenny.config.github_project, branch)))["blobs"]
+    outlist = [f for f in bag.keys() if fname.lower() in f.lower()]
+    outlist.sort()
+    if outlist:
+        phenny.say ("Found %s matching file(s) in the %s branch. First 5 are:" % (len(outlist), branch))
+        for found in outlist[:5]:
+            url = "https://github.com/%s/tree/%s%s" % (phenny.config.github_project, branch, found)
+            url = shorten(url)
+            phenny.say("%s %s" % (found, url))
+
+f_find_github_file.rule = r'\.findfile (.*)'
+f_find_github_file.priority = "low"
+f_find_github_file.thread = True
 
 #!/usr/bin/python
 # use Google's http://goo.gl/ URL shortener
