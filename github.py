@@ -44,7 +44,7 @@ def _find_github_file(phenny, branch, fname):
     outlist = [f for f in bag.keys() if re.search(fname.lower(), f.lower())]
     outlist.sort()
     if outlist:
-        phenny.say ("Found %s matching file(s) in the %s branch. First %s are:" % (len(outlist), branch), min(5, len(outlist)))
+        phenny.say ("Found %s matching file(s) in the %s branch. First %s are:" % (len(outlist), branch, min(5, len(outlist))))
         for found in outlist[:5]:
             url = "https://github.com/%s/tree/%s%s" % (phenny.config.github_project, branch, found)
             url = shorten(url)
