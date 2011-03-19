@@ -21,7 +21,18 @@ if ($debug) {
 if (isset($value->commits)) {
     foreach ($value->commits as $commit) {
         $url = new goo_gl($commit->url);
-        $message = "Commit " . substr($commit->id, 0, 7) . " by " . $commit->author->name . ": \"" . substr($commit->message, 0, 60) . "\"";
+        $hash = substr($commit->id, 0, 7);
+        if (isset($value->ref)) {
+            $pos = strrpos($value->ref, "/");
+            if ($pos === false)
+                $branch = $value->ref;
+            else
+                $branch = substr($value->ref, $pos+1);
+        } else {
+            $branch = "(not specified)";
+        }
+        $msg = substr($commit->message, 0, 60) . (strlen($commit->message) >= 60 ? "..." : "");
+        $message = "Commit $hash on $branch by ". $commit->author->name . ": \"$msg\"";
         $message .= " " . $url->result();
         sendToCat($message . "\n");
     }

@@ -44,15 +44,64 @@ def _find_github_file(phenny, branch, fname):
     outlist = [f for f in bag.keys() if re.search(fname.lower(), f.lower())]
     outlist.sort()
     if outlist:
-        phenny.say ("Found %s matching file(s) in the %s branch. First %s are:" % (len(outlist), branch), min(5, len(outlist)))
+        phenny.say ("Found %s matching file(s) in the %s branch. First %s are:" % (len(outlist), branch, min(5, len(outlist))))
         for found in outlist[:5]:
             url = "https://github.com/%s/tree/%s%s" % (phenny.config.github_project, branch, found)
             url = shorten(url)
             phenny.say("%s %s" % (found, url))
 
-f_find_github_file.rule = r'\.findfile (.*)'
+f_find_github_file.rule = r'\!findfile (.*)'
 f_find_github_file.priority = "low"
 f_find_github_file.thread = True
+
+#
+# Tagfile lookup
+#
+
+def f_find_github_tag(phenny, input):
+    print "Searching for tag: ", input
+    tmp = input.group(1).strip().split(" ", 2)
+    if len(tmp) > 1:
+        _find_github_tag(phenny, tmp[1], tmp[0].split(","))
+    else:
+        _find_github_tag(phenny, tmp[0])
+
+def getTag(e):
+    r = {}
+    for n in ("name", "file", "pattern", "lineNumber", "kind", "fileScope"):
+        r[n] = e[n]
+    return r
+
+def _find_github_tag(phenny, fname, types=("c", "f", "t")):
+    import ctags
+    from ctags import CTags, TagEntry
+
+    t = CTags(phenny.config.tagfile)
+    e = TagEntry()
+    if not t.find(e, fname, ctags.TAG_PARTIALMATCH):
+        phenny.say("Could not find any tags matching %s" % fname)
+        return
+    tags = [getTag(e)]
+    while t.findNext(e):
+        if e["kind"] in types:
+            tags.append(getTag(e))
+
+    newtags = []
+    for e in tags:
+        if e not in newtags: newtags.append(e)
+
+    phenny.say("Found %s possible matches. Displaying %s" % (len(newtags), min(len(newtags), 5)))
+
+    for entry in tags[:5]:
+        url = "https://github.com/%s/tree/%s/%s" % (phenny.config.github_project, "master", entry["file"])
+        if entry["lineNumber"]:
+            url += "#%s" % entry["lineNumber"]
+        url = shorten(url)
+        phenny.say("%s (%s) found in %s: %s" % (entry["pattern"], entry["kind"], entry["file"], url))
+
+f_find_github_tag.rule = r'\!find (.*)'
+f_find_github_tag.priority = "low"
+f_find_github_tag.thread = True
 
 #!/usr/bin/python
 # use Google's http://goo.gl/ URL shortener
