@@ -66,9 +66,8 @@ def ticket_lookup(self, ticket):
             self.say( "%s: Assigned To: %s" % (info['key'], info['assignee']))
         else:
             self.say( "%s: Assigned To: Unassigned" % (info['key']))
-        self.say( "%s: Priority:    %s" % (info['key'], self.jira_priorities[info['priority']]))
-        self.say( "%s: Status:      %s" % (info['key'], self.jira_statuses[info['status']]))
-        self.say( "%s: %s/browse/%s" % (info['key'], self.jira_baseurl, info['key']))
+        data = (info["key"], self.jira_priorities[info['priority']], self.jira_statuses[info['status']], self.jira_baseurl, info["key"])
+        self.say( "%s: Priority: %s, Status: %s, %s/browse/%s" % data)
 
 def f_jira(phenny, input):
     """JIRA stuff"""

@@ -56,6 +56,24 @@ f_find_github_file.priority = "low"
 f_find_github_file.thread = True
 
 #
+# List tagfiles
+#
+def f_list_git_pull_requests(phenny, input):
+    prList = web.json(web.get("http://github.com/api/v2/json/pulls/%s/open" % phenny.config.github_project))
+    pulls = prList["pulls"]
+    if len(pulls) == 0:
+        phenny.say("There are no open pull requests in %s" % phenny.config.github_project)
+    else:
+        phenny.say("%s open pull request%s:" % (len(pulls), "s" if len(pulls != 1) else ""))
+        for issue in pulls:
+            title = issue["title"][:60]
+            if len(issue["title"]) > 60: title += "..."
+            phenny.say("%s: %s %s" % (issue["user"]["login"], title, shorten(issue["html_url"])))
+f_list_git_pull_requests.rule = r'^git pull request'
+f_list_git_pull_requests.priority = "medium"
+f_list_git_pull_requests.thread = True
+
+#
 # Tagfile lookup
 #
 
