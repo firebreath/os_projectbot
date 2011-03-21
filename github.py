@@ -64,7 +64,7 @@ def f_list_git_pull_requests(phenny, input):
     if len(pulls) == 0:
         phenny.say("There are no open pull requests in %s" % phenny.config.github_project)
     else:
-        phenny.say("%s open pull request%s:" % (len(pulls), "s" if len(pulls != 1) else ""))
+        phenny.say("%s open pull request%s:" % (len(pulls), "s" if len(pulls) != 1 else ""))
         for issue in pulls:
             title = issue["title"][:60]
             if len(issue["title"]) > 60: title += "..."

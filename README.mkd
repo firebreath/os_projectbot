@@ -3,22 +3,78 @@ Installation and setup:
 
 To install, put it somewhere and add the path to your extras folder
 
-To use the JIRA plugin (or for things to even work with it in the path) you need to add the following to your ~/.phenny/default.py file:
+JIRA and Confluence
+===================
+To use the JIRA module (or for things to even work with it in the path) you need to add the following to your ~/.phenny/default.py file:
 
-jira_baseurl = "http://jira.yourproject.org/rpc/xmlrpc"
-jira_username = "user"
-jira_password = "pass""
-jira_projects = ["PROJ1","PROJ2"]
-jira_channels = ["#chan1", "#chan2"]
-jira_mappings = {"status":{
-    }, "priority": {
-    },
-}
+    jira_baseurl = "http://jira.yourproject.org/rpc/xmlrpc"
+    jira_username = "user"
+    jira_password = "pass""
+    jira_projects = ["PROJ1","PROJ2"]
+    jira_channels = ["#chan1", "#chan2"]
+    jira_mappings = {"status":{
+        }, "priority": {
+        },
+    }
 
-confluence_baseurl = "http://www.confluencepage.org/rpc/xmlrpc"
-confluence_username = "user"
-confluence_password = "pass"
-confluence_searchresults = 8
+    confluence_baseurl = "http://www.confluencepage.org/rpc/xmlrpc"
+    confluence_username = "user"
+    confluence_password = "pass"
+    confluence_searchresults = 8
 
-# This should be the github project to search when a hashtag is seen
-github_project = "firebreath/FireBreath"
+    # This should be the github project to search when a hashtag is seen
+    github_project = "firebreath/FireBreath"
+
+The JIRA module was adapted from Sean B. Palmer and can also be found in his repo.
+
+Github Module
+=============
+To use the github module, you'll want to set the default branch and the project in your default.py, like so:
+
+    github_project = "2600hz/bluebox"
+    github_defaultbranch = "master"
+
+You first need to install the github2 python module:
+
+    sudo easy_install github2
+
+The bot will automatically see any hash tags of at least 7 characters and do a lookup on the github repo;
+it will report the commit message (up to 60 chars) and a shortened URL to the commit.
+
+To search for a file, use the syntax "!findfile (regex)".  For example:
+
+    !findfile MyClassName\.(h|cpp)
+    !findfile SomeCoolFileName
+
+To list all pull requests currently open in your project, use:
+
+    git pull request
+
+CTags lookup
+============
+The github module also supports ctags lookup.
+
+    tagfile = "/Users/richard/code/phenny/os_projectbot/bluebox/tags"
+
+You first need to install the python-ctags module:
+
+    sudo easy_install github2
+
+Then to search for a tag, use "!find (search string)". For example::
+
+    !find ClassName
+    !find MethodName
+
+IRCCat Module
+=============
+
+The IRCCat module is *mostly* compatible with [IRCCat](https://github.com/RJ/irccat). It is known to work
+with the github webhook endpoint included in this project and with the [irccat JIRA listener plugin](https://github.com/RJ/irccat/tree/master/contrib/jira)
+from last.fm
+
+To use it, add the following to your default.py:
+
+    irccat_host = "127.0.0.1"
+    irccat_port = 54321
+
+This will start a listener on port 54321 on localhost (so it isn't reachable from outside your box) that is generally compatible with irccat.
