@@ -78,3 +78,8 @@ To use it, add the following to your default.py:
     irccat_port = 54321
 
 This will start a listener on port 54321 on localhost (so it isn't reachable from outside your box) that is generally compatible with irccat.
+
+Example default.py
+==================
+
+https://gist.github.com/879792
