@@ -82,4 +82,4 @@ This will start a listener on port 54321 on localhost (so it isn't reachable fro
 Example default.py
 ==================
 
-https://gist.github.com/879792
+[Example default.py](https://gist.github.com/879792) tuned for the [2600hz Bluebox project](http://www.2600hz.org)
